@@ -1,5 +1,7 @@
 package ru.agins.dev.studio;
 
+// I used this lib: https://github.com/rubenlagus/TelegramBots
+
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
@@ -12,58 +14,13 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import java.util.ArrayList;
 import java.util.List;
 import ru.agins.dev.studio.PassGen;
-import ru.agins.dev.studio.SavePass;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Bot extends TelegramLongPollingBot {
- 
-
-
-public class sp1taskT extends TimerTask {
-
-		@Override
-		public void run() {
-			sp1.NotUsed = true;
-			sp1timer.cancel();
-			
-		}
-
-	}
-
-public class sp2taskT extends TimerTask {
-
-	@Override
-	public void run() {
-		sp2.NotUsed = true;
-		sp2timer.cancel();
-	}
-
-}
-
-public class sp3taskT extends TimerTask {
-
-	@Override
-	public void run() {
-		sp3.NotUsed = true;
-		sp3timer.cancel();
-	}
-
-}
-private Timer sp1timer, sp2timer, sp3timer;
-String passOut, pass1;
-Long[] passNowID = new Long [10];
-SavePass sp1 = new SavePass();
-SavePass sp2 = new SavePass();
-SavePass sp3 = new SavePass();
-TimerTask sp1task=new sp1taskT();
-TimerTask sp2task=new sp2taskT();
-TimerTask sp3task=new sp3taskT();
-
-String[] passNow = new String[10];
-
-boolean passExpert = false, num = false, let = false, sym = false, passReady = false, savePass = false, Inline = true;
-int passExpertCH = 0, length = 0, passNowCH = 0;
+	
+String pass;
+int AdminID = 1234567; //My ChatID		!!!!!!!!!!!!
+boolean passExpert = false, num = false, let = false, sym = false, passReady = false, savePass = false, Inline = true, nonUsed=true;;
+int passExpertCH = 0, length = 0;
 
 	public static void main(String[] args) {
 		ApiContextInitializer.init();
@@ -82,7 +39,7 @@ int passExpertCH = 0, length = 0, passNowCH = 0;
  
 	@Override
 	public String getBotToken() {
-		return "123:32313fdsdfs"; //your token here
+		return "123:344234fgds"; //Your token here		!!!!!!!!!!!!
 	}
  
     @Override
@@ -97,42 +54,18 @@ int passExpertCH = 0, length = 0, passNowCH = 0;
                     if(message.hasText()){
                             
                         //create a object that contains the information to send back the message
-                    	//create a object that contains the information to send back the message
                         SendMessage answer = new SendMessage();
                         SendMessage password = new SendMessage();
                         answer.setChatId(message.getChatId().toString()); //who should get the message? the sender from which we got the message...
                         password.setChatId(message.getChatId().toString());
                         String ChatId = message.getChatId().toString();
-                        Long ChatId2 = message.getChatId();
                        
                         if (savePass)
                         { 
-                        			String SavedPass="Error Here";
-                        			//Long ID = sp1.GetChatID();
-                        			if (sp1.NotUsed==false)
+                        			String SavedPass="U have no access. Your ID: " + message.getChatId().toString();
+                        			if (Integer.parseInt(ChatId) == AdminID)
                         			{
-                        				SavedPass="here";
-                        				if (Integer.parseInt(String.valueOf(sp1.GetChatID()))==Integer.parseInt(ChatId)){              //if (sp1.GetChatID()==message.getChatId()){                					
-                        					SavedPass=sp1.pass;
-                        					sp1.NotUsed=true;
-                        					sp1timer.cancel();
-                        				}
-                        			}
-                        			if (sp2.NotUsed==false)
-                        			{
-                        				if (Integer.parseInt(String.valueOf(sp2.GetChatID()))==Integer.parseInt(ChatId)){  
-                        					SavedPass=sp2.pass;
-                        					sp2.NotUsed=true;
-                        					sp2timer.cancel();
-                        				}
-                        			}
-                        			if (sp3.NotUsed==false)
-                        			{
-                        				if (Integer.parseInt(String.valueOf(sp3.GetChatID()))==Integer.parseInt(ChatId)){  
-                        					SavedPass=sp3.pass;
-                        					sp3.NotUsed=true;
-                        					sp3timer.cancel();
-                        				}
+                        				SavedPass = pass;
                         			}
                         			answer.setText("#opgpass " + message.getText() + ":");
                         			password.setText(SavedPass);
@@ -147,8 +80,8 @@ int passExpertCH = 0, length = 0, passNowCH = 0;
                         	switch (passExpertCH){
                         		
                         	case 0:	switch (message.getText()){ case "+": num = true; ansText ="What about let?"; break; case "-": num = false; ansText="What about let?"; break; default: passExpert=false; passExpertCH = -1; break;} passExpertCH++; break;                     
-                        	case 1: switch (message.getText()){ case "+": let = true; ansText = "symbols?"; break; case "-": let = false; ansText = "symbols?"; break; default: passExpert=false; passExpertCH = -1; break;} passExpertCH++; break;
-                        	case 2: switch (message.getText()){ case "+": sym = true; ansText = "length here:"; break; case "-": sym = false; ansText = "length here:"; break; default: passExpert=false; passExpertCH = -1; break;} passExpertCH++; break;
+                        	case 1: switch (message.getText()){ case "+": let = true; ansText = "Symbols?"; break; case "-": let = false; ansText = "Symbols?"; break; default: passExpert=false; passExpertCH = -1; break;} passExpertCH++; break;
+                        	case 2: switch (message.getText()){ case "+": sym = true; ansText = "Length here:"; break; case "-": sym = false; ansText = "Length here:"; break; default: passExpert=false; passExpertCH = -1; break;} passExpertCH++; break;
                         	case 3:		
                         				if (isDigit(message.getText())&&((num==true)||(let==true)||(sym==true)))
                         				{
@@ -158,11 +91,12 @@ int passExpertCH = 0, length = 0, passNowCH = 0;
                         					passExpert=false;
                         					PassGen PG = new PassGen();
                         					Pass = PG.PassGenMain(num, let, sym, length);
-                        					answer.setText("Your password here:");
-                        					spChecker(ChatId2, Pass);   
+                        					answer.setText("Your password here:");  
+                        					pass = Pass;
                         					password.setText(Pass);
                         					passReady = true;
-                        					passOut = "";
+                        					
+                        					
                         				}else{
                             				passExpertCH = 0;
                             				passExpert=false;
@@ -178,24 +112,28 @@ int passExpertCH = 0, length = 0, passNowCH = 0;
                         switch (message.getText()){
                         
                         	case "/pass": 
-                        					spCheckerId(ChatId);
                         					String Pass;
                         					PassGen PG = new PassGen();
-                        					Pass = PG.PassGenMain(true, true, false, 12);
-                        					spChecker(ChatId2, Pass);                       				  
+                        					Pass = PG.PassGenMain(true, true, false, 12);               				  
                         				  	answer.setText("We used defalut prop:");
                         				  	password.setText(Pass);
+                        				  	pass = Pass;
                         				  	passReady = true;
-                        				  	passOut = "";
-                        				  break;
+                        				  	nonUsed = false;
+
+                        				    break;
                         	case "/passexpert":
-                        			//spCheckerId(ChatId2);
-                        			passOut = "";
-                        			passExpert = true;
-                        			      
-                        			answer.setText("Do you wanna use num?");
-                        		break;
-                        	
+                        					passExpert = true;                      			      
+                        					answer.setText("Do you wanna use num?");
+                        					nonUsed = false;
+                        					break;
+                        		
+                        	default: 		if (nonUsed){
+                        					answer.setText("Bad command");
+                        					passReady = false;
+                        					}
+                        					break;
+                        				
                         }
                        
                        try {
@@ -215,7 +153,7 @@ int passExpertCH = 0, length = 0, passNowCH = 0;
                                     		password.setReplyMarkup(markupInline);
                                     	}
                                     	sendMessage(password);
-                                    	passOut="";
+                                    	nonUsed=true;
                                     	passReady=false;
                                     	Inline = true;
                                     }
@@ -233,6 +171,7 @@ int passExpertCH = 0, length = 0, passNowCH = 0;
                 {
                 	savePass = true;
                 	answer.setText("Enter name for this pass: ");
+                	nonUsed = false;
                 }
                 
                 try {
@@ -246,72 +185,6 @@ int passExpertCH = 0, length = 0, passNowCH = 0;
             
     }//end onUpdateReceived()
  
-    public void spChecker(long ChatId2, String Pass){
-    	
-    	if (sp1.NotUsed)
-	  	{
-    		if (sp1.ChatID!=0){
-    			sp1timer.cancel();
-    	  		sp1timer.purge();
-    	  		sp1timer=null;
-    	  		
-    		}
-	  		sp1.ChatID=ChatId2; 		  		
-	  		sp1.pass=Pass;	  	
-	  		sp1.NotUsed=false;	
-	  		
-	  		
-	  		
-	  		sp1task = new sp1taskT();
-	  		sp1timer = new Timer();
-	  		sp1timer.scheduleAtFixedRate(sp1task,300000, 300000);
-	  		
-	  	}
-	  	if (sp2.NotUsed)
-	  	{
-	  		sp2.ChatID=ChatId2;
-	  		sp2.pass=Pass;
-	  		sp2.NotUsed=false;
-	  		sp2task = new sp2taskT();
-	  		sp2timer = new Timer();
-	  		
-	  		sp2timer.schedule(sp2task, 300000);
-	  	}
-	  	if (sp3.NotUsed)
-	  	{
-	  		sp3.ChatID=ChatId2;
-	  		sp3.pass=Pass;
-	  		sp3.NotUsed=false;
-	  		sp3timer = new Timer();
-	  		sp3timer.schedule(sp3task, 300000);
-	  	}
-	  	
-    }
-    
-    public void spCheckerId(String ChatId){
-
-    	
-    	if (Integer.parseInt(String.valueOf(sp1.GetChatID()))==Integer.parseInt(ChatId)){        				
-			sp1.NotUsed=true;
-			//sp1timer.cancel();
-			//sp1timer = new Timer();
-			//sp1task = new sp1taskT();
-	  	//	sp1timer.schedule(sp1task, 300000);
-			
-		}
-    	
-    	if (Integer.parseInt(String.valueOf(sp2.GetChatID()))==Integer.parseInt(String.valueOf(ChatId))){            				
-			sp2.NotUsed=true;
-
-			
-		}
-    	
-    	if (Integer.parseInt(String.valueOf(sp3.GetChatID()))==Integer.parseInt(String.valueOf(ChatId))){            				
-			sp3.NotUsed=true;
-
-    	}
-   	
-    }
     
 	//@SuppressWarnings("deprecation")
 	private void sendMsg(Message message, String text) {
